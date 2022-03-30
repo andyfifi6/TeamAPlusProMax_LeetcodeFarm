@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LeetcodeFarm">
         <activity
+            android:name=".note.NoteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".checkin.CheckinDate"
+            android:exported="false" />
+        <activity
             android:name=".user.MainActivity"
             android:exported="true">
             <intent-filter>
