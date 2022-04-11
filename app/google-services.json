@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "180820167057",
+    "project_id": "leetcodefarm",
+    "storage_bucket": "leetcodefarm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:180820167057:android:dd8f08bf1f62d1af3a3230",
+        "android_client_info": {
+          "package_name": "cs5520.final.leetcodefarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "180820167057-2ug7ho4enk1nk91kis6m3lb6hj32jgik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3efVBEz51GFVR7wP613kUVSK3xJyj3T0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "180820167057-2ug7ho4enk1nk91kis6m3lb6hj32jgik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
