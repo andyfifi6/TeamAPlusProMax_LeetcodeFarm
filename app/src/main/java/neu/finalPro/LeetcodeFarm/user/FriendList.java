@@ -30,10 +30,18 @@ public class FriendList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityFriendListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Intent i = getIntent();
-        String username = i.getStringExtra("username");
-        currentUserId = i.getStringExtra("userId");
+        String username = getIntent().getStringExtra("username");
+        currentUserId = getIntent().getStringExtra("userId");
         binding.imageBack.setOnClickListener(v -> onBackPressed());
+        binding.newFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), AddFriendActivity.class);
+                intent.putExtra("userId", currentUserId);
+                intent.putStringArrayListExtra("friendList", (ArrayList<String>) friendIdList);
+                startActivity(intent);
+            }
+        });
         binding.username.setText(username);
         init(savedInstanceState);
     }
@@ -66,6 +74,15 @@ public class FriendList extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    public void onRestart() {  // After a pause OR at startup
+        super.onRestart();
+        //Refresh your stuff here
+        users.clear();
+        friendIdList.clear();
+        getFriends();
     }
 
 
