@@ -1,8 +1,10 @@
 package neu.finalPro.LeetcodeFarm.note;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -23,13 +25,11 @@ import neu.finalPro.LeetcodeFarm.note.entities.Note;
 
 public class NoteActivity extends AppCompatActivity {
 
-    public static final int REQUEST_CODE_ADD_NOTE = 1;
-
     private ActivityNoteBinding binding;
 
-    private RecyclerView notesRecyclerView;
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
 
     @Override
@@ -51,11 +51,21 @@ public class NoteActivity extends AppCompatActivity {
 
     private void setListeners(){
         binding.imageBack.setOnClickListener(v -> onBackPressed());
+
+        activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK){
+                            getNotes();
+                        }
+                    }
+                });
+
         binding.addNoteMain.setOnClickListener(v -> {
-            startActivityForResult(
-                    new Intent(getApplicationContext(), CreateNoteActivity.class),
-                    REQUEST_CODE_ADD_NOTE
-            );
+            activityResultLauncher.launch(
+                    new Intent(getApplicationContext(), CreateNoteActivity.class));
         });
     }
 
@@ -70,9 +80,11 @@ public class NoteActivity extends AppCompatActivity {
                 return NoteDatabase.getDatabase(getApplicationContext()).noteDao().getAllNotes();
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             protected void onPostExecute(List<Note> notes){
                 super.onPostExecute(notes);
+                Log.d("Note_List", "Size is " + noteList.size());
                 if (noteList.size() == 0) {
                     noteList.addAll(notes);
                     notesAdapter.notifyDataSetChanged();
