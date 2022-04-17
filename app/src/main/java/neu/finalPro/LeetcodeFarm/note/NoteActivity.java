@@ -12,6 +12,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 
@@ -35,7 +37,6 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
     private ActivityNoteBinding binding;
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
-    private RecyclerView notesRecyclerView;
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
 
@@ -57,6 +58,24 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         notesAdapter = new NotesAdapter(noteList, this);
         binding.notesRecyclerView.setAdapter(notesAdapter);
         binding.notesRecyclerView.setVisibility(View.VISIBLE);
+        binding.inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                notesAdapter.cancelTimer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (noteList.size() != 0) {
+                    notesAdapter.searchNotes(editable.toString());
+                }
+            }
+        });
 
     }
 

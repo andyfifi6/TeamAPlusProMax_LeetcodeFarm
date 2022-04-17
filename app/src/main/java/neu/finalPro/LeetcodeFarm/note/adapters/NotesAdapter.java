@@ -91,7 +91,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     }
 
-    public void SearchNotes(final String keyword) {
+    public void searchNotes(final String keyword) {
         String l_keyword = keyword.toLowerCase();
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -120,5 +120,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         }, 500);
     }
 
-
+    public void cancelTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+    }
 }
