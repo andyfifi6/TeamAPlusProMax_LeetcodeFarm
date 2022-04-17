@@ -4,12 +4,16 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 
@@ -22,14 +26,21 @@ import neu.finalPro.LeetcodeFarm.databinding.ActivityNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.adapters.NotesAdapter;
 import neu.finalPro.LeetcodeFarm.note.database.NoteDatabase;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
+import neu.finalPro.LeetcodeFarm.note.liseners.NotesListener;
 
-public class NoteActivity extends AppCompatActivity {
+public class NoteActivity extends AppCompatActivity implements NotesListener {
+
+    public static final int REQUEST_CODE_ADD_NOTE = 1;
+    public static final int REQUEST_CODE_UPDATE_NOTE = 2;
+    public static final int REQUEST_SHOW_NOTES = 3;
 
     private ActivityNoteBinding binding;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
-    private ActivityResultLauncher<Intent> activityResultLauncher;
+
+    private int noteClickPosition = -1;
 
 
     @Override
@@ -44,14 +55,32 @@ public class NoteActivity extends AppCompatActivity {
 
     private void init(){
         noteList = new ArrayList<>();
-        notesAdapter = new NotesAdapter(noteList);
+        notesAdapter = new NotesAdapter(noteList, this);
         binding.notesRecyclerView.setAdapter(notesAdapter);
         binding.notesRecyclerView.setVisibility(View.VISIBLE);
+        binding.inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                notesAdapter.cancelTimer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (noteList.size() != 0) {
+                    notesAdapter.searchNotes(editable.toString());
+                }
+            }
+        });
+
     }
 
     private void setListeners(){
         binding.imageBack.setOnClickListener(v -> onBackPressed());
-
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -62,13 +91,22 @@ public class NoteActivity extends AppCompatActivity {
                         }
                     }
                 });
-
         binding.addNoteMain.setOnClickListener(v -> {
             activityResultLauncher.launch(
                     new Intent(getApplicationContext(), CreateNoteActivity.class));
+
         });
+
     }
 
+    @Override
+    public void onNoteClick(Note note, int position) {
+        noteClickPosition = position;
+        Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
+        intent.putExtra("ViewNote", true);
+        intent.putExtra("note", note);
+        startActivity(intent);
+    }
 
     private void getNotes() {
 
@@ -80,16 +118,14 @@ public class NoteActivity extends AppCompatActivity {
                 return NoteDatabase.getDatabase(getApplicationContext()).noteDao().getAllNotes();
             }
 
-            @SuppressLint("NotifyDataSetChanged")
             @Override
             protected void onPostExecute(List<Note> notes){
                 super.onPostExecute(notes);
-                Log.d("Note_List", "Size is " + noteList.size());
                 if (noteList.size() == 0) {
                     noteList.addAll(notes);
                     notesAdapter.notifyDataSetChanged();
                 } else {
-                    noteList.add(0, notes.get(0));
+                    noteList.add(0, notes.get(notes.size()-1));
                     notesAdapter.notifyItemInserted(0);
                 }
                 binding.notesRecyclerView.smoothScrollToPosition(0);

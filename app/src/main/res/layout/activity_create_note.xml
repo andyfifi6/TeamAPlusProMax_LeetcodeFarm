@@ -30,7 +30,7 @@
                 android:src="@drawable/ic_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/blue"/>
+                app:tint="@color/blue" />
 
             <ImageView
                 android:id="@+id/imageSave"
@@ -41,10 +41,25 @@
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_4sdp"
                 android:src="@drawable/ic_done"
-                app:tint="@color/blue"
                 app:layout_constraintBottom_toBottomOf="@+id/imageBack"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/imageBack"/>
+                app:layout_constraintTop_toTopOf="@id/imageBack"
+                app:tint="@color/blue" />
+
+            <ImageView
+                android:id="@+id/addImage"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginEnd="76dp"
+                android:background="@drawable/background_done_button"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/ic_image"
+                app:layout_constraintBottom_toBottomOf="@+id/imageBack"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imageBack"
+                app:layout_constraintVertical_bias="0.428"
+                app:tint="@color/blue" />
 
             <EditText
                 android:id="@+id/inputNoteTitle"
@@ -58,9 +73,9 @@
                 android:imeOptions="actionDone"
                 android:importantForAutofill="no"
                 android:inputType="text"
-                android:textStyle="bold"
                 android:textSize="@dimen/_16ssp"
-                app:layout_constraintTop_toBottomOf="@+id/imageBack"/>
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/imageBack" />
 
             <TextView
                 android:id="@+id/textDateTime"
@@ -69,7 +84,7 @@
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintEnd_toEndOf="@+id/inputNoteTitle"
                 app:layout_constraintStart_toStartOf="@+id/inputNoteTitle"
-                app:layout_constraintTop_toBottomOf="@+id/inputNoteTitle"/>
+                app:layout_constraintTop_toBottomOf="@+id/inputNoteTitle" />
 
             <EditText
                 android:id="@+id/inputNoteSubtitle"
@@ -87,7 +102,7 @@
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/viewSubtitleIndicator"
-                app:layout_constraintTop_toBottomOf="@+id/textDateTime"/>
+                app:layout_constraintTop_toBottomOf="@+id/textDateTime" />
 
             <View
                 android:id="@+id/viewSubtitleIndicator"
@@ -97,10 +112,10 @@
                 android:background="@drawable/background_subtitle_indicator"
                 app:layout_constraintBottom_toBottomOf="@+id/inputNoteSubtitle"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/inputNoteSubtitle"/>
+                app:layout_constraintTop_toTopOf="@id/inputNoteSubtitle" />
 
             <ImageView
-                android:id="@+id/imageNote"
+                android:id="@+id/image1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_12sdp"
@@ -109,8 +124,45 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/app_name"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@+id/inputNoteSubtitle"
-                />
+                app:layout_constraintTop_toBottomOf="@id/inputNoteSubtitle" />
+
+            <ImageView
+                android:id="@+id/image2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/image1" />
+
+            <ImageView
+                android:id="@+id/image3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/image2" />
+
+            <ImageView
+                android:id="@+id/removeImage1"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/ic_delete"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/image1"
+                app:layout_constraintTop_toTopOf="@id/image1"/>
+
 
             <EditText
                 android:id="@+id/inputNote"
@@ -129,7 +181,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageNote"/>
+                app:layout_constraintTop_toBottomOf="@+id/image3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

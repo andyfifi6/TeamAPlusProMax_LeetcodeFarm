@@ -101,6 +101,6 @@ public class Note implements Serializable {
     @NonNull
     @Override
     public String toString(){
-        return title + " : " + dateTime;
+        return title + " : " + dateTime + " sub" + subtitle + " Notetext" + noteText +" image" + imagePath;
     }
 }

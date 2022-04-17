@@ -9,11 +9,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_lcfarm"
         android:label="@string/app_name"
-        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_lcfarm_round"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.LeetcodeFarm"
-        tools:targetApi="q">
+        tools:targetApi = "q">
         <activity
             android:name=".note.CreateNoteActivity"
             android:exported="false"
