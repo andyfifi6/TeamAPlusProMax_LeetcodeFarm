@@ -11,7 +11,7 @@ import java.util.List;
 
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 
-@SuppressWarnings("AndroidUnresolvedRoomSqlReference")
+
 @Dao
 public interface NoteDao {
 
