@@ -87,7 +87,7 @@ public class SignUpActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentReference -> {
                     loading(false);
                     currentUserId = documentReference.getId();
-                    Intent intent = new Intent(getApplicationContext(), FriendList.class);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.putExtra("userId", documentReference.getId());
                     intent.putExtra("username", inputName.getText().toString());
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

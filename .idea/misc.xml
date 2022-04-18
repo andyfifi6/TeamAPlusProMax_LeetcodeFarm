@@ -30,6 +30,7 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.21614583333333334" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_note.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/activity_share_note.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.21614583333333334" />
         <entry key="app/src/main/res/layout/item_container_note.xml" value="0.22" />
         <entry key="app/src/main/res/layout/item_container_received_message.xml" value="0.23020833333333332" />

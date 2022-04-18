@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,6 +23,7 @@ import neu.finalPro.LeetcodeFarm.models.User;
 public class FriendList extends AppCompatActivity {
     private ActivityFriendListBinding binding;
     private String currentUserId;
+    private boolean shareMode;
     List<String> friendIdList = new ArrayList<>();
     List<User> users = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -32,6 +34,7 @@ public class FriendList extends AppCompatActivity {
         setContentView(binding.getRoot());
         String username = getIntent().getStringExtra("username");
         currentUserId = getIntent().getStringExtra("userId");
+        shareMode = getIntent().getBooleanExtra("shareMode",false);
         binding.imageBack.setOnClickListener(v -> onBackPressed());
         binding.newFriend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,16 +137,26 @@ public class FriendList extends AppCompatActivity {
                         }
 
                         if(users.size() > 0) {
-                            UserListener userListener = new UserListener() {
-                                @Override
-                                public void onUserClicked(User user) {
-                                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                    intent.putExtra("friendName", user.getUsername());
-                                    intent.putExtra("friendId", user.getId());
-                                    intent.putExtra("userId", currentUserId);
-                                    startActivity(intent);
-                                }
-                            };
+                            UserListener userListener;
+                            if(shareMode) {
+                                userListener = new UserListener() {
+                                    @Override
+                                    public void onUserClicked(User user) {
+                                        showToast("Successfully share with " + user.getUsername());
+                                    }
+                                };
+                            } else {
+                                userListener = new UserListener() {
+                                    @Override
+                                    public void onUserClicked(User user) {
+                                        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                        intent.putExtra("friendName", user.getUsername());
+                                        intent.putExtra("friendId", user.getId());
+                                        intent.putExtra("userId", currentUserId);
+                                        startActivity(intent);
+                                    }
+                                };
+                            }
                             UserAdapter usersAdapter = new UserAdapter(users, userListener);
                             binding.usersRecyclerView.setAdapter(usersAdapter);
                             binding.usersRecyclerView.setVisibility(View.VISIBLE);
@@ -170,6 +183,12 @@ public class FriendList extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
     }
+
+
+    private void showToast(String message){
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
 
     private void loading(Boolean isLoading){
         if(isLoading){
