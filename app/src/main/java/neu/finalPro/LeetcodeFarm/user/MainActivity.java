@@ -26,8 +26,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.button.setOnClickListener(v ->
-                startActivity(new Intent(getApplicationContext(), NoteActivity.class)));
+        binding.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
         binding.shareNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
