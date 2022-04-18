@@ -308,7 +308,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/cancel_presentation/baseline_cancel_presentation_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/insert_link/baseline_insert_link_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -318,7 +318,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_delete" />
+                            <entry key="color" value="ffffff" />
+                            <entry key="outputName" value="ic_link_white" />
                           </map>
                         </option>
                       </PersistentState>

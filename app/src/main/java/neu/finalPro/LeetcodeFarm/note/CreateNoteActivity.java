@@ -2,6 +2,7 @@ package neu.finalPro.LeetcodeFarm.note;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -18,7 +19,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,11 +45,12 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private EditText inputNoteTitle, inputNoteSubtitle, inputNoteText;
     private TextView textDateTime;
-    private ImageView image1, image2, image3;
+    private ImageView image1;
     private ImageView removeImage1;
 
     private String imagePath;
     private Note availableNote;
+    private AlertDialog dialogAddUrl;
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int REQUEST_CODE_SELECT_IMAGE = 2;
@@ -99,6 +104,11 @@ public class CreateNoteActivity extends AppCompatActivity {
             imagePath = availableNote.getImagePath();
         }
 
+        if (availableNote.getWebLink() != null && !availableNote.getWebLink().trim().isEmpty()) {
+            binding.displayLCUrl.setText(availableNote.getWebLink());
+            binding.displayLCUrl.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void setListeners(){
@@ -122,6 +132,12 @@ public class CreateNoteActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.addUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddUrlDialog();
+            }
+        });
 
     }
 
@@ -141,6 +157,10 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setNoteText(inputNoteText.getText().toString());
         note.setDateTime(textDateTime.getText().toString());
         note.setImagePath(imagePath);
+
+        if (binding.displayLCUrl.getVisibility() == View.VISIBLE) {
+            note.setWebLink(binding.displayLCUrl.getText().toString());
+        }
 
         if (availableNote != null) {
             note.setId(note.getId());
@@ -222,6 +242,43 @@ public class CreateNoteActivity extends AppCompatActivity {
             cursor.close();
         }
         return filePath;
+    }
+
+    private void showAddUrlDialog() {
+        if (dialogAddUrl == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View v = LayoutInflater.from(this).inflate(
+                    R.layout.layout_add_url, (ViewGroup) findViewById(R.id.layoutAddUrl));
+            builder.setView(v);
+
+            dialogAddUrl = builder.create();
+
+            EditText inputURL = v.findViewById(R.id.textUrl);
+            inputURL.requestFocus();
+
+            v.findViewById(R.id.textUrlAdd).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (inputURL.getText().toString().trim().isEmpty()) {
+                        Toast.makeText(CreateNoteActivity.this, "Please enter URL", Toast.LENGTH_SHORT).show();
+                    } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
+                        Toast.makeText(CreateNoteActivity.this, "Please check for the valid URL", Toast.LENGTH_SHORT).show();
+                    } else {
+                        binding.displayLCUrl.setText(inputURL.getText().toString());
+                        binding.displayLCUrl.setVisibility(View.VISIBLE);
+                        dialogAddUrl.dismiss();
+                    }
+                }
+            });
+
+            v.findViewById(R.id.textUrlCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogAddUrl.dismiss();
+                }
+            });
+        }
+        dialogAddUrl.show();
     }
     
 }
