@@ -120,7 +120,7 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
     }
 
     private void getNotes() {
-        String currentUserId = getUserId();
+        String currentUserId = getUserId(); //"99OQPMMf7R06cTRdEs07";
 
         executorService.execute(new Runnable() {
             @Override
@@ -157,16 +157,6 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
                                 Log.e("No_notes", "Query notes error");
                             }
                         });
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("run_finished", "success");
-                        Intent intent = new Intent();
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                });
             }
 
         });
@@ -198,5 +188,13 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
     private String getUserId(){
         Intent intent = getIntent();
         return intent.getStringExtra("id");
+    }
+
+    @Override
+    public void onRestart() {  // After a pause OR at startup
+        super.onRestart();
+        //Refresh your stuff here
+        noteList.clear();
+        getNotes();
     }
 }
