@@ -24,10 +24,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import neu.finalPro.LeetcodeFarm.R;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityCreateNoteBinding;
@@ -41,7 +47,7 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private EditText inputNoteTitle, inputNoteSubtitle, inputNoteText;
     private TextView textDateTime;
-    private ImageView image1, image2, image3;
+    private ImageView image1;
     private ImageView removeImage1;
 
     private String imagePath;
@@ -49,6 +55,11 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int REQUEST_CODE_SELECT_IMAGE = 2;
+
+    //database
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private FirebaseFirestore database = FirebaseFirestore.getInstance();
+    private DocumentReference documentReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,11 +157,40 @@ public class CreateNoteActivity extends AppCompatActivity {
             note.setId(note.getId());
         }
 
-        @SuppressLint("StaticFieldLeak")
-        class SaveNoteTask extends AsyncTask<Void, Void, Void>{
+        //add to database
+        documentReference = database.collection("notes").document();
+        HashMap<String, Object> noteMap = new HashMap<>();
+        String userId = getUserId();
+        noteMap.put("userId", userId);
+        noteMap.put("title", inputNoteTitle.getText().toString());
+        noteMap.put("subtitle", inputNoteSubtitle.getText().toString());
+        noteMap.put("noteText", inputNoteText.getText().toString());
+        noteMap.put("dateTime", textDateTime.getText().toString());
+        noteMap.put("imagePath", imagePath);
 
+        executorService.execute(new Runnable() {
             @Override
-            protected Void doInBackground(Void... voids){
+            public void run() {
+                Log.d("run_inBack", "success");
+                documentReference.set(noteMap);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("run_finished", "success");
+                        Intent intent = new Intent();
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                });
+            }
+
+        });
+
+       /* class SaveNoteTask {
+            private ExecutorService executorService = Executors.newSingleThreadExecutor();
+            @Override
+            protected void doInBackground(){
                 NoteDatabase.getDatabase(getApplicationContext()).noteDao().insertNote(note);
                 return null;
             }
@@ -164,7 +204,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         }
 
-        new SaveNoteTask().execute();
+        new SaveNoteTask().execute(); */
     }
 
     private void selectImage() {
@@ -222,6 +262,11 @@ public class CreateNoteActivity extends AppCompatActivity {
             cursor.close();
         }
         return filePath;
+    }
+
+    private String getUserId(){
+        Intent intent = getIntent();
+        return intent.getStringExtra("id");
     }
     
 }

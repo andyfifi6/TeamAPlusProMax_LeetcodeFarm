@@ -9,7 +9,6 @@ import androidx.room.RoomDatabase;
 import neu.finalPro.LeetcodeFarm.note.dao.NoteDao;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 
-@Database(entities = Note.class, version = 1, exportSchema = false)
 public abstract class NoteDatabase extends RoomDatabase {
 
     private static NoteDatabase noteDatabase;
