@@ -47,6 +47,21 @@
                 app:tint="@color/blue" />
 
             <ImageView
+                android:id="@+id/imageShare"
+                android:background="@drawable/background_done_button"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:src="@drawable/ic_baseline_share_24"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_4sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageBack"
+                app:layout_constraintEnd_toEndOf="@+id/imageSave"
+                app:layout_constraintEnd_toStartOf="@+id/addImage"
+                app:layout_constraintTop_toTopOf="@id/imageBack"
+                app:tint="@color/blue" />
+
+            <ImageView
                 android:id="@+id/addImage"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
