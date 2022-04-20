@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/drawable/background_search.xml" value="0.449" />
         <entry key="app/src/main/res/drawable/background_subtitlle_indicator.xml" value="0.449" />
         <entry key="app/src/main/res/drawable/ic_back.xml" value="0.1945" />
+        <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.157" />
         <entry key="app/src/main/res/layout/activity_checkin_date.xml" value="0.12318840579710146" />
         <entry key="app/src/main/res/layout/activity_create_note.xml" value="0.24444444444444444" />
@@ -21,6 +22,7 @@
         <entry key="app/src/main/res/layout/item_container_note.xml" value="0.22" />
         <entry key="app/src/main/res/layout/layout_add_image.xml" value="0.1" />
         <entry key="app/src/main/res/layout/layout_add_url.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/layout_delete_note.xml" value="0.3063977045497698" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.157" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.157" />
       </map>

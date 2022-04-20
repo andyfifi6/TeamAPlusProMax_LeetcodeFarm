@@ -1,4 +1,4 @@
-package neu.finalPro.LeetcodeFarm.note.liseners;
+package neu.finalPro.LeetcodeFarm.note.utils;
 
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 

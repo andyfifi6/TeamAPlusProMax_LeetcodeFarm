@@ -109,7 +109,7 @@
                 android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@null"
-                android:hint="@string/note_subtitle"
+                android:hint="@string/add_tags"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:paddingTop="@dimen/_8sdp"
@@ -128,6 +128,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/inputNoteSubtitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/inputNoteSubtitle" />
+
 
             <TextView
                 android:id="@+id/displayLCUrl"

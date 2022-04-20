@@ -141,7 +141,6 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     }
 
-
     private void saveNote(){
         if(inputNoteTitle.getText().toString().trim().isEmpty()){
             Toast.makeText(this, "Enter a title", Toast.LENGTH_LONG).show();
@@ -151,7 +150,6 @@ public class CreateNoteActivity extends AppCompatActivity {
             return;
     }
         final Note note = new Note();
-        // TODO: store info to note in database.
         note.setTitle(inputNoteTitle.getText().toString());
         note.setSubtitle(inputNoteSubtitle.getText().toString());
         note.setNoteText(inputNoteText.getText().toString());
@@ -163,7 +161,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
 
         if (availableNote != null) {
-            note.setId(note.getId());
+            note.setId(availableNote.getId());
         }
 
         @SuppressLint("StaticFieldLeak")
@@ -274,6 +272,16 @@ public class CreateNoteActivity extends AppCompatActivity {
             v.findViewById(R.id.textUrlCancel).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    dialogAddUrl.dismiss();
+                }
+            });
+
+            v.findViewById(R.id.textUrlDelete).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    inputURL.setText(null);
+                    binding.displayLCUrl.setText(null);
+                    binding.displayLCUrl.setVisibility(View.GONE);
                     dialogAddUrl.dismiss();
                 }
             });
