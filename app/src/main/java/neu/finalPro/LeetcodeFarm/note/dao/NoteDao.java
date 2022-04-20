@@ -15,12 +15,12 @@ import neu.finalPro.LeetcodeFarm.note.entities.Note;
 @Dao
 public interface NoteDao {
 
-    @Query("SELECT * FROM notes ORDER BY id")
-    List<Note> getAllNotes();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertNote(Note note);
-
-    @Delete
-    void deleteNote(Note note);
+//    @Query("SELECT * FROM notes ORDER BY id")
+//    List<Note> getAllNotes();
+//
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    void insertNote(Note note);
+//
+//    @Delete
+//    void deleteNote(Note note);
 }

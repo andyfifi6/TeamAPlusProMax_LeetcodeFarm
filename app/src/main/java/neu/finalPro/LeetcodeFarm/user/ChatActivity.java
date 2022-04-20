@@ -2,6 +2,7 @@ package neu.finalPro.LeetcodeFarm.user;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -20,6 +21,9 @@ import java.util.Locale;
 
 import neu.finalPro.LeetcodeFarm.databinding.ActivityChatBinding;
 import neu.finalPro.LeetcodeFarm.models.ChatMessage;
+import neu.finalPro.LeetcodeFarm.models.User;
+import neu.finalPro.LeetcodeFarm.note.CreateNoteActivity;
+import neu.finalPro.LeetcodeFarm.note.entities.Note;
 
 public class ChatActivity extends AppCompatActivity {
     private ActivityChatBinding binding;
@@ -41,11 +45,36 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void init(){
+        binding.inputMessage.setVisibility(View.GONE);
+        binding.layoutSend.setVisibility(View.GONE);
         chatMessages = new ArrayList<>();
         binding.textName.setText(receiverName);
+        ItemListener listener = new ItemListener() {
+            @Override
+            public void onUserClicked(User user) {
+
+            }
+
+            @Override
+            public void onChatClicked(ChatMessage chatMessage) {
+                Note clickedNote = new Note();
+                clickedNote.setTitle(chatMessage.noteTitle);
+                clickedNote.setSubtitle(chatMessage.noteSubtitle);
+                clickedNote.setNoteText(chatMessage.noteText);
+                clickedNote.setImagePath(chatMessage.noteImagePath);
+                clickedNote.setDateTime(chatMessage.noteDateTime);
+
+                Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
+                intent.putExtra("ShareMode", true);
+                intent.putExtra("note", clickedNote);
+                intent.putExtra("userId", userId);
+                startActivity(intent);
+            }
+        };
         chatAdapter = new ChatAdapter(
                 chatMessages,
-                userId
+                userId,
+                listener
         );
         binding.chatRecyclerView.setAdapter(chatAdapter);
         database = FirebaseFirestore.getInstance();
@@ -70,6 +99,13 @@ public class ChatActivity extends AppCompatActivity {
                     chatMessage.content = documentChange.getDocument().getString("message");
                     chatMessage.dateTime = getReadableDateTime(documentChange.getDocument().getDate("timestamp"));
                     chatMessage.dateObject = documentChange.getDocument().getDate("timestamp");
+                    // get note information
+                    chatMessage.noteTitle = documentChange.getDocument().getString("noteTitle");
+                    chatMessage.noteSubtitle = documentChange.getDocument().getString("noteSubtitle");
+                    chatMessage.noteImagePath = documentChange.getDocument().getString("noteImagePath");
+                    chatMessage.noteDateTime = documentChange.getDocument().getString("noteDateTime");
+                    chatMessage.noteText = documentChange.getDocument().getString("noteText");
+
                     chatMessages.add(chatMessage);
                 }
             }
@@ -86,11 +122,11 @@ public class ChatActivity extends AppCompatActivity {
     };
 
     private void listenMessages(){
-        database.collection("chats")
+        database.collection("shareNotes")
                 .whereEqualTo("senderId", userId)
                 .whereEqualTo("receiverId", receiverId)
                 .addSnapshotListener(eventListener);
-        database.collection("chats")
+        database.collection("shareNotes")
                 .whereEqualTo("senderId", receiverId)
                 .whereEqualTo("receiverId", userId)
                 .addSnapshotListener(eventListener);

@@ -1,14 +1,8 @@
 package neu.finalPro.LeetcodeFarm.note;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,30 +10,31 @@ import android.util.Log;
 import android.view.View;
 
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
 
 import neu.finalPro.LeetcodeFarm.databinding.ActivityNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.adapters.NotesAdapter;
-import neu.finalPro.LeetcodeFarm.note.database.NoteDatabase;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.note.liseners.NotesListener;
 
 public class NoteActivity extends AppCompatActivity implements NotesListener {
     private ActivityNoteBinding binding;
-    private ActivityResultLauncher<Intent> activityResultLauncher;
-
+    private String userId;
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
     private int noteClickPosition = -1;
-
+    private FirebaseFirestore database = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityNoteBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        userId = getIntent().getStringExtra("userId");
         setListeners();
         getNotes();
         init();
@@ -73,21 +68,14 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
 
     private void setListeners(){
         binding.imageBack.setOnClickListener(v -> onBackPressed());
-        activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK){
-                            getNotes();
-                        }
-                    }
-                });
-
         binding.addNoteMain.setOnClickListener(v -> {
-            activityResultLauncher.launch(
-                    new Intent(getApplicationContext(), CreateNoteActivity.class));
+            Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
+            intent.putExtra("ViewNote", false);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
         });
+
+
     }
 
     @Override
@@ -96,36 +84,47 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
         intent.putExtra("ViewNote", true);
         intent.putExtra("note", note);
+        intent.putExtra("userId", userId);
         startActivity(intent);
     }
 
     private void getNotes() {
+        database.collection("notes")
+                .whereEqualTo("userId",userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    noteList.clear();
+                    if (task.isSuccessful() && task.getResult() != null){
+                        for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                            Note note = new Note();
+                            note.setTitle(queryDocumentSnapshot.getString("title"));
+                            note.setSubtitle(queryDocumentSnapshot.getString("subtitle"));
+                            note.setNoteText(queryDocumentSnapshot.getString("noteText"));
+                            note.setDateTime(queryDocumentSnapshot.getString("dateTime"));
+                            note.setImagePath(queryDocumentSnapshot.getString("imagePath"));
+                            note.setId(queryDocumentSnapshot.getId());
+                            note.setUserId(userId);
+                            noteList.add(note);
+                        }
+                        if( noteList.size() > 0 ){
+                            NotesAdapter notesAdapter = new NotesAdapter(noteList, this);
+                            binding.notesRecyclerView.setAdapter(notesAdapter);
+                            binding.notesRecyclerView.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.notesRecyclerView.setVisibility(View.VISIBLE);
+                            Log.e("No_notes", "Query notes error, note size is 0.");
+                        }
+                    } else {
+                        Log.e("No_notes", "Query notes error");
+                    }
+                });
+    }
 
-        @SuppressLint("StaticFieldLeak")
-        class GetNotesTask extends AsyncTask<Void, Void, List<Note>> {
-
-            @Override
-            protected List<Note> doInBackground(Void... voids) {
-                return NoteDatabase.getDatabase(getApplicationContext()).noteDao().getAllNotes();
-            }
-
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            protected void onPostExecute(List<Note> notes){
-                super.onPostExecute(notes);
-                Log.d("Note_List", "Size is " + noteList.size());
-                if (noteList.size() == 0) {
-                    noteList.addAll(notes);
-                    notesAdapter.notifyDataSetChanged();
-                } else {
-                    noteList.add(0, notes.get(notes.size()-1));
-                    notesAdapter.notifyItemInserted(0);
-                }
-                binding.notesRecyclerView.smoothScrollToPosition(0);
-            }
-        }
-
-        new GetNotesTask().execute();
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        //Refresh your stuff here
+        getNotes();
     }
 
 }

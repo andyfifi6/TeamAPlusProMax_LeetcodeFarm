@@ -1,8 +1,5 @@
 package neu.finalPro.LeetcodeFarm.user;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -17,11 +14,11 @@ import neu.finalPro.LeetcodeFarm.models.User;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder>{
     private final List<User> users;
-    private final UserListener userListener;
+    private final ItemListener itemListener;
 
-    public UserAdapter(List<User> users, UserListener userListener) {
+    public UserAdapter(List<User> users, ItemListener itemListener) {
         this.users = users;
-        this.userListener = userListener;
+        this.itemListener = itemListener;
     }
 
     @NonNull
@@ -57,7 +54,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             binding.textName.setText(user.getUsername());
             binding.textEmail.setText(user.getUserEmail());
             binding.imageProfile.setImageResource(R.drawable.profile);
-            binding.getRoot().setOnClickListener(v -> userListener.onUserClicked(user));
+            binding.getRoot().setOnClickListener(v -> itemListener.onUserClicked(user));
         }
     }
 

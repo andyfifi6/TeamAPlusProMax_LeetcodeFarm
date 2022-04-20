@@ -35,11 +35,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        binding.shareNote.setOnClickListener(new View.OnClickListener() {
+        binding.friendList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), FriendList.class);
-                intent.putExtra("shareMode", true);
                 intent.putExtra("userId", userId);
                 intent.putExtra("username", username);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

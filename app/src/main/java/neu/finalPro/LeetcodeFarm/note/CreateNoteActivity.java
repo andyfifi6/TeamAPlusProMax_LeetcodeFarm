@@ -7,33 +7,32 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
-import neu.finalPro.LeetcodeFarm.R;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityCreateNoteBinding;
-import neu.finalPro.LeetcodeFarm.databinding.ActivityNoteBinding;
-import neu.finalPro.LeetcodeFarm.note.database.NoteDatabase;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
+import neu.finalPro.LeetcodeFarm.user.FriendList;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
@@ -41,14 +40,18 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private EditText inputNoteTitle, inputNoteSubtitle, inputNoteText;
     private TextView textDateTime;
-    private ImageView image1, image2, image3;
+    private ImageView image1;
     private ImageView removeImage1;
-
+    private String userId;
     private String imagePath;
     private Note availableNote;
 
+    private FirebaseFirestore database = FirebaseFirestore.getInstance();
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int REQUEST_CODE_SELECT_IMAGE = 2;
+
+    private boolean shareMode = false;
+    private boolean viewNote = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +60,16 @@ public class CreateNoteActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setListeners();
         imagePath = "";
-
-        if (getIntent().getBooleanExtra("ViewNote", false)) {
+        shareMode = getIntent().getBooleanExtra("ShareMode", false);
+        viewNote = getIntent().getBooleanExtra("ViewNote", false);
+        userId = getIntent().getStringExtra("userId");
+        if (viewNote || shareMode) {
             availableNote = (Note) getIntent().getSerializableExtra("note");
+            if(shareMode) {
+                binding.imageShare.setVisibility(View.GONE);
+                binding.imageSave.setVisibility(View.GONE);
+                binding.addImage.setVisibility(View.GONE);
+            }
             setViewNote();
         }
 
@@ -80,6 +90,17 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        binding.imageShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FriendList.class);
+                intent.putExtra("shareMode", true);
+                intent.putExtra("userId", userId);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("note", (Note) getIntent().getSerializableExtra("note"));
+                startActivity(intent);
+            }
+        });
         binding.textDateTime.setText(
                 new SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm a", Locale.getDefault()).format(new Date())
         );
@@ -135,36 +156,33 @@ public class CreateNoteActivity extends AppCompatActivity {
             return;
     }
         final Note note = new Note();
-        // TODO: store info to note in database.
         note.setTitle(inputNoteTitle.getText().toString());
         note.setSubtitle(inputNoteSubtitle.getText().toString());
         note.setNoteText(inputNoteText.getText().toString());
         note.setDateTime(textDateTime.getText().toString());
         note.setImagePath(imagePath);
+        note.setUserId(userId);
+        // under view mode, update the existing notes, otherwise, create a new note(in share mode,will store a new copy into current user's notes)
+        if (viewNote) {
+            database.collection("notes").document(availableNote.getId()).set(note);
+        } else {
+            HashMap<String, Object> noteMap = new HashMap<>();
+            noteMap.put("userId", userId);
+            noteMap.put("title", inputNoteTitle.getText().toString());
+            noteMap.put("subtitle", inputNoteSubtitle.getText().toString());
+            noteMap.put("noteText", inputNoteText.getText().toString());
+            noteMap.put("dateTime", textDateTime.getText().toString());
+            noteMap.put("imagePath", imagePath);
 
-        if (availableNote != null) {
-            note.setId(note.getId());
+            database.collection("notes").add(noteMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+                    intent.putExtra("userId", userId);
+                    startActivity(intent);
+                }
+            });
         }
-
-        @SuppressLint("StaticFieldLeak")
-        class SaveNoteTask extends AsyncTask<Void, Void, Void>{
-
-            @Override
-            protected Void doInBackground(Void... voids){
-                NoteDatabase.getDatabase(getApplicationContext()).noteDao().insertNote(note);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid){
-                super.onPostExecute(aVoid);
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        }
-
-        new SaveNoteTask().execute();
     }
 
     private void selectImage() {
