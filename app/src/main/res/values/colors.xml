@@ -13,4 +13,9 @@
     <color name="sand">#D3D2B5</color>
     <color name="blue">#0294EE</color>
     <color name="royal">#4B9CD3</color>
+
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="purple_300">#69398b</color>
+    <color name="teal_700">#00796B</color>
 </resources>

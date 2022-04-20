@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="neu.finalPro.LeetcodeFarm">
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -13,22 +12,18 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.LeetcodeFarm"
-        tools:targetApi = "q">
+        tools:targetApi="q">
         <activity
-            android:name=".note.CreateNoteActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"/>
-        <activity
-            android:name=".note.NoteActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"/>
-        <activity
-            android:name=".checkin.CheckinDate"
+            android:name=".user.AddFriendActivity"
             android:exported="false" />
         <activity
-            android:name=".user.MainActivity"
+            android:name=".user.ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".user.FriendList"
+            android:exported="false" />
+        <activity
+            android:name=".user.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,6 +31,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".user.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".note.CreateNoteActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".note.NoteActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".checkin.CheckinDate"
+            android:exported="false" />
+        <activity
+            android:name=".user.MainActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

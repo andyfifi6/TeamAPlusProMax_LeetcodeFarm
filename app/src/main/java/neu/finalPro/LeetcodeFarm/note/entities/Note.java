@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-public class Note implements Serializable {
+public class Note implements Serializable{
 
-    public String id, title, dateTime, subtitle, noteText, imagePath, webLink;
+    private String id, title, dateTime, subtitle, noteText, imagePath, webLink, userId;
 
     public String getId() {
         return id;
@@ -67,7 +67,14 @@ public class Note implements Serializable {
         this.webLink = webLink;
     }
 
-    @NonNull
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString(){
         return title + " : " + dateTime + " sub" + subtitle + " Notetext" + noteText +" image" + imagePath;
