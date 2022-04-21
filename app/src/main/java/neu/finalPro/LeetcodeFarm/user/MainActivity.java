@@ -20,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        userId = getIntent().getStringExtra("userId");
-        username = getIntent().getStringExtra("username");
         setListeners();
     }
 
@@ -30,8 +28,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
-                intent.putExtra("userId", userId);
-                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });
@@ -39,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), FriendList.class);
-                intent.putExtra("userId", userId);
-                intent.putExtra("username", username);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }

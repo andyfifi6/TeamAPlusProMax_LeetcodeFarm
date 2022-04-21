@@ -12,7 +12,13 @@ import android.view.View;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 
@@ -20,23 +26,30 @@ import neu.finalPro.LeetcodeFarm.databinding.ActivityNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.adapters.NotesAdapter;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.note.liseners.NotesListener;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class NoteActivity extends AppCompatActivity implements NotesListener {
     private ActivityNoteBinding binding;
     private String userId;
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
+    private PreferenceManager preferenceManager;
     private int noteClickPosition = -1;
     private FirebaseFirestore database = FirebaseFirestore.getInstance();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityNoteBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        userId = getIntent().getStringExtra("userId");
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        userId = preferenceManager.getString(Constants.KEY_USER_ID);
         setListeners();
-        getNotes();
+        try {
+            getNotes();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         init();
     }
 
@@ -71,7 +84,6 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         binding.addNoteMain.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
             intent.putExtra("ViewNote", false);
-            intent.putExtra("userId", userId);
             startActivity(intent);
         });
 
@@ -84,11 +96,10 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
         intent.putExtra("ViewNote", true);
         intent.putExtra("note", note);
-        intent.putExtra("userId", userId);
         startActivity(intent);
     }
 
-    private void getNotes() {
+    private void getNotes() throws ParseException {
         database.collection("notes")
                 .whereEqualTo("userId",userId)
                 .get()
@@ -107,6 +118,21 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
                             noteList.add(note);
                         }
                         if( noteList.size() > 0 ){
+                            SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm a");
+                            Collections.sort(noteList, new Comparator<Note>() {
+                                @Override
+                                public int compare(Note note, Note t1) {
+                                    int res = 0;
+                                    try {
+                                        Date start = sdf.parse(note.getDateTime());
+                                        Date end = sdf.parse(t1.getDateTime());
+                                        res = end.compareTo(start);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    return res;
+                                }
+                            });
                             NotesAdapter notesAdapter = new NotesAdapter(noteList, this);
                             binding.notesRecyclerView.setAdapter(notesAdapter);
                             binding.notesRecyclerView.setVisibility(View.VISIBLE);
@@ -123,8 +149,11 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
     @Override
     public void onRestart() {
         super.onRestart();
-        //Refresh your stuff here
-        getNotes();
+        try {
+            getNotes();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 }

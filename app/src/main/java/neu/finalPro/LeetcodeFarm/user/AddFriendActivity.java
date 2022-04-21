@@ -23,19 +23,24 @@ import java.util.List;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityAddFriendBinding;
 import neu.finalPro.LeetcodeFarm.models.ChatMessage;
 import neu.finalPro.LeetcodeFarm.models.User;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class AddFriendActivity extends AppCompatActivity {
     private ActivityAddFriendBinding binding;
     private List<User> users = new ArrayList<>();
     private List<String> friendIdList = new ArrayList<>();
     private String userId;
+    private PreferenceManager preferenceManager;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAddFriendBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        userId = getIntent().getStringExtra("userId");
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        userId = preferenceManager.getString(Constants.KEY_USER_ID);
+
         friendIdList = getIntent().getStringArrayListExtra("friendList");
         binding.imageBack.setOnClickListener(v -> onBackPressed());
         binding.searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +77,6 @@ public class AddFriendActivity extends AppCompatActivity {
                                                     public void onSuccess(DocumentReference documentReference) {
                                                         showToast("Successfully added!");
                                                         Intent intent = new Intent(getApplicationContext(), FriendList.class);
-                                                        intent.putExtra("userId", userId);
                                                         startActivity(intent);
                                                     }
                                                 });
