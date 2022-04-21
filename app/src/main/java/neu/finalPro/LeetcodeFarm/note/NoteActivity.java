@@ -1,14 +1,8 @@
 package neu.finalPro.LeetcodeFarm.note;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,32 +10,46 @@ import android.util.Log;
 import android.view.View;
 
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 
 import neu.finalPro.LeetcodeFarm.databinding.ActivityNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.adapters.NotesAdapter;
-import neu.finalPro.LeetcodeFarm.note.database.NoteDatabase;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.note.liseners.NotesListener;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class NoteActivity extends AppCompatActivity implements NotesListener {
     private ActivityNoteBinding binding;
-    private ActivityResultLauncher<Intent> activityResultLauncher;
-
+    private String userId;
     private List<Note> noteList;
     private NotesAdapter notesAdapter;
+    private PreferenceManager preferenceManager;
     private int noteClickPosition = -1;
-
-
+    private FirebaseFirestore database = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityNoteBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        userId = preferenceManager.getString(Constants.KEY_USER_ID);
         setListeners();
-        getNotes();
+        try {
+            getNotes();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         init();
     }
 
@@ -73,21 +81,13 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
 
     private void setListeners(){
         binding.imageBack.setOnClickListener(v -> onBackPressed());
-        activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK){
-                            getNotes();
-                        }
-                    }
-                });
-
         binding.addNoteMain.setOnClickListener(v -> {
-            activityResultLauncher.launch(
-                    new Intent(getApplicationContext(), CreateNoteActivity.class));
+            Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
+            intent.putExtra("ViewNote", false);
+            startActivity(intent);
         });
+
+
     }
 
     @Override
@@ -99,33 +99,61 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         startActivity(intent);
     }
 
-    private void getNotes() {
+    private void getNotes() throws ParseException {
+        database.collection("notes")
+                .whereEqualTo("userId",userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    noteList.clear();
+                    if (task.isSuccessful() && task.getResult() != null){
+                        for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                            Note note = new Note();
+                            note.setTitle(queryDocumentSnapshot.getString("title"));
+                            note.setSubtitle(queryDocumentSnapshot.getString("subtitle"));
+                            note.setNoteText(queryDocumentSnapshot.getString("noteText"));
+                            note.setDateTime(queryDocumentSnapshot.getString("dateTime"));
+                            note.setImagePath(queryDocumentSnapshot.getString("imagePath"));
+                            note.setId(queryDocumentSnapshot.getId());
+                            note.setUserId(userId);
+                            noteList.add(note);
+                        }
+                        if( noteList.size() > 0 ){
+                            SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm a");
+                            Collections.sort(noteList, new Comparator<Note>() {
+                                @Override
+                                public int compare(Note note, Note t1) {
+                                    int res = 0;
+                                    try {
+                                        Date start = sdf.parse(note.getDateTime());
+                                        Date end = sdf.parse(t1.getDateTime());
+                                        res = end.compareTo(start);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    return res;
+                                }
+                            });
+                            NotesAdapter notesAdapter = new NotesAdapter(noteList, this);
+                            binding.notesRecyclerView.setAdapter(notesAdapter);
+                            binding.notesRecyclerView.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.notesRecyclerView.setVisibility(View.VISIBLE);
+                            Log.e("No_notes", "Query notes error, note size is 0.");
+                        }
+                    } else {
+                        Log.e("No_notes", "Query notes error");
+                    }
+                });
+    }
 
-        @SuppressLint("StaticFieldLeak")
-        class GetNotesTask extends AsyncTask<Void, Void, List<Note>> {
-
-            @Override
-            protected List<Note> doInBackground(Void... voids) {
-                return NoteDatabase.getDatabase(getApplicationContext()).noteDao().getAllNotes();
-            }
-
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            protected void onPostExecute(List<Note> notes){
-                super.onPostExecute(notes);
-                Log.d("Note_List", "Size is " + noteList.size());
-                if (noteList.size() == 0) {
-                    noteList.addAll(notes);
-                    notesAdapter.notifyDataSetChanged();
-                } else {
-                    noteList.add(0, notes.get(notes.size()-1));
-                    notesAdapter.notifyItemInserted(0);
-                }
-                binding.notesRecyclerView.smoothScrollToPosition(0);
-            }
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        try {
+            getNotes();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-
-        new GetNotesTask().execute();
     }
 
 }

@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,20 +21,26 @@ import java.util.HashMap;
 import java.util.List;
 
 import neu.finalPro.LeetcodeFarm.databinding.ActivityAddFriendBinding;
+import neu.finalPro.LeetcodeFarm.models.ChatMessage;
 import neu.finalPro.LeetcodeFarm.models.User;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class AddFriendActivity extends AppCompatActivity {
     private ActivityAddFriendBinding binding;
     private List<User> users = new ArrayList<>();
     private List<String> friendIdList = new ArrayList<>();
-    private String currentUserId;
+    private String userId;
+    private PreferenceManager preferenceManager;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAddFriendBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        currentUserId = getIntent().getStringExtra("userId");
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        userId = preferenceManager.getString(Constants.KEY_USER_ID);
+
         friendIdList = getIntent().getStringArrayListExtra("friendList");
         binding.imageBack.setOnClickListener(v -> onBackPressed());
         binding.searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +59,7 @@ public class AddFriendActivity extends AppCompatActivity {
                                     }
 
                                     if(users.size() > 0) {
-                                        UserListener userListener = new UserListener() {
+                                        ItemListener itemListener = new ItemListener() {
                                             @Override
                                             public void onUserClicked(User user) {
                                                 String currentId = user.getId();
@@ -66,7 +70,7 @@ public class AddFriendActivity extends AppCompatActivity {
                                                     }
                                                 }
                                                 HashMap<String, Object> friendRecord = new HashMap<>();
-                                                friendRecord.put("userId", currentUserId);
+                                                friendRecord.put("userId", userId);
                                                 friendRecord.put("friendId", currentId);
                                                 db.collection("friends").add(friendRecord).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                     @Override
@@ -77,8 +81,13 @@ public class AddFriendActivity extends AppCompatActivity {
                                                     }
                                                 });
                                             }
+
+                                            @Override
+                                            public void onChatClicked(ChatMessage chatMessage) {
+
+                                            }
                                         };
-                                        UserAdapter usersAdapter = new UserAdapter(users, userListener);
+                                        UserAdapter usersAdapter = new UserAdapter(users, itemListener);
                                         binding.usersRecyclerView.setAdapter(usersAdapter);
                                         binding.usersRecyclerView.setVisibility(View.VISIBLE);
                                     }

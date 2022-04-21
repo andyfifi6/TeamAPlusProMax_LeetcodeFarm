@@ -16,12 +16,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private final List<ChatMessage> chatMessage;
     private final String senderId;
+    private final ItemListener listener;
     public static final int VIEW_TYPE_SENT = 1;
     public static final int VIEW_TYPE_RECEIVED = 2;
 
-    public ChatAdapter(List<ChatMessage> chatMessage, String senderId) {
+    public ChatAdapter(List<ChatMessage> chatMessage, String senderId, ItemListener listener) {
         this.chatMessage = chatMessage;
         this.senderId = senderId;
+        this.listener = listener;
     }
 
     @NonNull
@@ -69,7 +71,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
     }
 
-    static class SentMessageViewHolder extends RecyclerView.ViewHolder{
+    class SentMessageViewHolder extends RecyclerView.ViewHolder{
 
         private final ItemContainerSentMessageBinding binding;
 
@@ -81,10 +83,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         void setData(ChatMessage chatMessage) {
             binding.textMessage.setText(chatMessage.content);
             binding.textDateTime.setText(chatMessage.dateTime);
+            binding.getRoot().setOnClickListener(v -> listener.onChatClicked(chatMessage));
         }
     }
 
-    static class ReceivedMessageViewHolder extends RecyclerView.ViewHolder {
+    class ReceivedMessageViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemContainerReceivedMessageBinding binding;
 
@@ -96,6 +99,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         void setData(ChatMessage chatMessage) {
             binding.textMessage.setText(chatMessage.content);
             binding.textDateTime.setText(chatMessage.dateTime);
+            binding.getRoot().setOnClickListener(v -> listener.onChatClicked(chatMessage));
         }
     }
 }
