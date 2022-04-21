@@ -33,7 +33,8 @@ import java.util.Locale;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityCreateNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.user.FriendList;
-import neu.finalPro.LeetcodeFarm.user.MainActivity;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
@@ -48,6 +49,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private Note availableNote;
 
     private FirebaseFirestore database = FirebaseFirestore.getInstance();
+    private PreferenceManager preferenceManager;
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int REQUEST_CODE_SELECT_IMAGE = 2;
 
@@ -63,7 +65,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         imagePath = "";
         shareMode = getIntent().getBooleanExtra("ShareMode", false);
         viewNote = getIntent().getBooleanExtra("ViewNote", false);
-        userId = getIntent().getStringExtra("userId");
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        userId = preferenceManager.getString(Constants.KEY_USER_ID);
         if (viewNote || shareMode) {
             availableNote = (Note) getIntent().getSerializableExtra("note");
             if(shareMode) {
@@ -96,7 +99,6 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), FriendList.class);
                 intent.putExtra("shareMode", true);
-                intent.putExtra("userId", userId);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("note", (Note) getIntent().getSerializableExtra("note"));
                 startActivity(intent);
@@ -124,11 +126,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void setListeners(){
-        binding.imageBack.setOnClickListener(v -> {
-            Intent notePage = new Intent(getApplicationContext(), NoteActivity.class);
-            notePage.putExtra("userId", userId);
-            startActivity(notePage);
-        });
+        binding.imageBack.setOnClickListener(v -> onBackPressed());
         binding.imageSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,10 +167,13 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setUserId(userId);
         // under view mode, update the existing notes, otherwise, create a new note(in share mode,will store a new copy into current user's notes)
         if (viewNote) {
-            database.collection("notes").document(availableNote.getId()).set(note);
-            Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
-            intent.putExtra("userId", userId);
-            startActivity(intent);
+            database.collection("notes").document(availableNote.getId()).set(note).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+                    startActivity(intent);
+                }
+            });
         } else {
             HashMap<String, Object> noteMap = new HashMap<>();
             noteMap.put("userId", userId);
@@ -186,7 +187,6 @@ public class CreateNoteActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
                     Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
-                    intent.putExtra("userId", userId);
                     startActivity(intent);
                 }
             });

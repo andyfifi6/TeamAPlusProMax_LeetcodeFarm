@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +16,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
-import neu.finalPro.LeetcodeFarm.Constants;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.databinding.ActivitySignUpBinding;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class SignUpActivity extends AppCompatActivity {
     private ActivitySignUpBinding binding;
@@ -24,12 +26,13 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText inputName, inputEmail, inputPassword, inputConfirmPassword;
     private ProgressBar progressBar;
     private Button buttonSignUp;
-    public static String currentUserId;
+    private PreferenceManager preferenceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        preferenceManager = new PreferenceManager(getApplicationContext());
 
         inputName = binding.inputName;
         inputEmail = binding.inputEmail;
@@ -82,15 +85,16 @@ public class SignUpActivity extends AppCompatActivity {
         user.put(Constants.KEY_EMAIL, inputEmail.getText().toString());
         user.put(Constants.KEY_PASSWORD, inputPassword.getText().toString());
         user.put(Constants.KEY_IMAGE, "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
-        user.put(Constants.KEY_CHECKIN_DATE_COUNT, 0);
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .add(user)
                 .addOnSuccessListener(documentReference -> {
                     loading(false);
-                    currentUserId = documentReference.getId();
-                    Intent intent = new Intent(getApplicationContext(), GrowthActivity.class);
-                    intent.putExtra("userId", documentReference.getId());
-                    intent.putExtra("username", inputName.getText().toString());
+
+                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                    preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
+                    preferenceManager.putString(Constants.KEY_USERNAME, binding.inputName.getText().toString());
+
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 })

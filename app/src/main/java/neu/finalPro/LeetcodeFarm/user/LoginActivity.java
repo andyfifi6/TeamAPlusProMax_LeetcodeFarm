@@ -15,8 +15,9 @@ import android.widget.Toast;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import neu.finalPro.LeetcodeFarm.Constants;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityLoginBinding;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
@@ -24,13 +25,14 @@ public class LoginActivity extends AppCompatActivity {
     private TextView textCreateNew;
     private Button buttonSignIn;
     private ProgressBar progressBar;
+    private PreferenceManager preferenceManager;
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        preferenceManager = new PreferenceManager(getApplicationContext());
 
         inputEmail = binding.inputEmail;
         inputPassword = binding.inputPassword;
@@ -65,10 +67,12 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0){
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                        Intent intent = new Intent(getApplicationContext(), GrowthActivity.class);
-                        intent.putExtra("userId", documentSnapshot.getId());
-                        intent.putExtra("username", documentSnapshot.get("username").toString());
-                        intent.putExtra("userEmail", documentSnapshot.get("email").toString());
+
+                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                        preferenceManager.putString(Constants.KEY_USER_ID, documentSnapshot.getId());
+                        preferenceManager.putString(Constants.KEY_USERNAME, documentSnapshot.getString(Constants.KEY_USERNAME));
+
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     } else {

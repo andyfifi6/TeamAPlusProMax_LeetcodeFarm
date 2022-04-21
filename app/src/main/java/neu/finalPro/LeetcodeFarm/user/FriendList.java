@@ -20,17 +20,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import neu.finalPro.LeetcodeFarm.Constants;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityFriendListBinding;
 import neu.finalPro.LeetcodeFarm.models.ChatMessage;
 import neu.finalPro.LeetcodeFarm.models.User;
-import neu.finalPro.LeetcodeFarm.note.CreateNoteActivity;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class FriendList extends AppCompatActivity {
     private ActivityFriendListBinding binding;
     private String userId;
     private boolean shareMode;
+    private PreferenceManager preferenceManager;
     List<String> friendIdList = new ArrayList<>();
     List<User> users = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -39,24 +40,22 @@ public class FriendList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityFriendListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        String username = getIntent().getStringExtra("username");
-        userId = getIntent().getStringExtra("userId");
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        userId = preferenceManager.getString(Constants.KEY_USER_ID);
         shareMode = getIntent().getBooleanExtra("shareMode",false);
-        binding.imageBack.setOnClickListener(v -> {
-            Intent mainPage = new Intent(getApplicationContext(), MainActivity.class);
-            mainPage.putExtra("userId", userId);
-            startActivity(mainPage);
-        });
+        if(shareMode) {
+            binding.newFriend.setVisibility(View.GONE);
+        }
+        binding.imageBack.setOnClickListener(v -> onBackPressed());
         binding.newFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddFriendActivity.class);
-                intent.putExtra("userId", userId);
                 intent.putStringArrayListExtra("friendList", (ArrayList<String>) friendIdList);
                 startActivity(intent);
             }
         });
-        binding.username.setText(username);
+        binding.username.setText(preferenceManager.getString(Constants.KEY_USERNAME));
         init(savedInstanceState);
     }
 
@@ -81,19 +80,15 @@ public class FriendList extends AppCompatActivity {
                 }
             }
         }
-
         else {
             getFriends();
 
         }
-
-
     }
 
     @Override
     public void onRestart() {  // After a pause OR at startup
         super.onRestart();
-        //Refresh your stuff here
         users.clear();
         friendIdList.clear();
         getFriends();
@@ -170,7 +165,6 @@ public class FriendList extends AppCompatActivity {
                                         Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                         intent.putExtra("friendName", user.getUsername());
                                         intent.putExtra("friendId", user.getId());
-                                        intent.putExtra("userId", userId);
                                         startActivity(intent);
                                     }
 
