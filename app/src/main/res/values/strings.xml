@@ -21,4 +21,14 @@
     <string name="select_user">Select User</string>
     <string name="Choose_an_emoji" />
     <string name="choose_an_emoji">Choose an emoji</string>
+
+    <string name="delete_note">Delete Note</string>
+    <string name="sure_to_delete_note">Are you sure to delete this note forever?</string>
+    <string name="yes">YES</string>
+    <string name="delete">DELETE</string>
+    <string name="add">ADD</string>
+    <string name="cancel">CANCEL</string>
+    <string name="add_tags">Add tags for the note</string>
+    <string name="add_leetcode_link">Add leetcode link</string>
+    <string name="enter_url">Enter URL</string>
 </resources>

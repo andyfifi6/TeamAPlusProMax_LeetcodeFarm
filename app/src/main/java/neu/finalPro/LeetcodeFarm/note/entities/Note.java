@@ -77,6 +77,6 @@ public class Note implements Serializable{
 
     @Override
     public String toString(){
-        return title + " : " + dateTime + " sub" + subtitle + " Notetext" + noteText +" image" + imagePath;
+        return title + " : " + dateTime + " sub" + subtitle + " Notetext" + noteText +" image" + imagePath + webLink;
     }
 }

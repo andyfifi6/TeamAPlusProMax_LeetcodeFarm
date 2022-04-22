@@ -2,6 +2,7 @@ package neu.finalPro.LeetcodeFarm.note;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,7 +16,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import neu.finalPro.LeetcodeFarm.R;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityCreateNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.user.FriendList;
@@ -40,12 +46,13 @@ public class CreateNoteActivity extends AppCompatActivity {
     private ActivityCreateNoteBinding binding;
 
     private EditText inputNoteTitle, inputNoteSubtitle, inputNoteText;
-    private TextView textDateTime;
+    private TextView textDateTime, displayLCUrl;
     private ImageView image1;
     private ImageView removeImage1;
     private String userId;
     private String imagePath;
     private Note availableNote;
+    private AlertDialog dialogAddUrl=null;
 
     private FirebaseFirestore database = FirebaseFirestore.getInstance();
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
@@ -80,6 +87,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         textDateTime = binding.textDateTime;
         image1 = binding.image1;
         removeImage1 = binding.removeImage1;
+        displayLCUrl = binding.displayLCUrl;
 
         removeImage1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +129,11 @@ public class CreateNoteActivity extends AppCompatActivity {
             imagePath = availableNote.getImagePath();
         }
 
+        if (availableNote.getWebLink() != null && !availableNote.getWebLink().trim().isEmpty()) {
+            binding.displayLCUrl.setText(availableNote.getWebLink());
+            binding.displayLCUrl.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void setListeners(){
@@ -148,6 +161,12 @@ public class CreateNoteActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.addUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddUrlDialog();
+            }
+        });
 
     }
 
@@ -167,6 +186,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setDateTime(textDateTime.getText().toString());
         note.setImagePath(imagePath);
         note.setUserId(userId);
+        note.setWebLink(displayLCUrl.getText().toString());
+
         // under view mode, update the existing notes, otherwise, create a new note(in share mode,will store a new copy into current user's notes)
         if (viewNote) {
             database.collection("notes").document(availableNote.getId()).set(note);
@@ -181,6 +202,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             noteMap.put("noteText", inputNoteText.getText().toString());
             noteMap.put("dateTime", textDateTime.getText().toString());
             noteMap.put("imagePath", imagePath);
+            noteMap.put("webLink", displayLCUrl.getText().toString());
 
             database.collection("notes").add(noteMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
@@ -248,6 +270,54 @@ public class CreateNoteActivity extends AppCompatActivity {
             cursor.close();
         }
         return filePath;
+    }
+
+    private void showAddUrlDialog() {
+        if (dialogAddUrl == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View v = LayoutInflater.from(this).inflate(
+                    R.layout.layout_add_url, (ViewGroup) findViewById(R.id.layoutAddUrl));
+            builder.setView(v);
+
+            dialogAddUrl = builder.create();
+
+            EditText inputURL = v.findViewById(R.id.textUrl);
+            inputURL.requestFocus();
+
+            v.findViewById(R.id.textUrlAdd).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (inputURL.getText().toString().trim().isEmpty()) {
+                        Toast.makeText(CreateNoteActivity.this, "Please enter URL", Toast.LENGTH_SHORT).show();
+                    } else if (!Patterns.WEB_URL.matcher(inputURL.getText().toString()).matches()) {
+                        Toast.makeText(CreateNoteActivity.this, "Please check for the valid URL", Toast.LENGTH_SHORT).show();
+                    } else {
+                        binding.displayLCUrl.setText(inputURL.getText().toString());
+                        binding.displayLCUrl.setVisibility(View.VISIBLE);
+                        dialogAddUrl.dismiss();
+                    }
+                }
+            });
+
+            v.findViewById(R.id.textUrlCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogAddUrl.dismiss();
+                }
+            });
+
+            v.findViewById(R.id.textUrlDelete).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    inputURL.setText(null);
+                    binding.displayLCUrl.setText(null);
+                    binding.displayLCUrl.setVisibility(View.GONE);
+                    displayLCUrl = binding.displayLCUrl;
+                    dialogAddUrl.dismiss();
+                }
+            });
+        }
+        dialogAddUrl.show();
     }
     
 }
