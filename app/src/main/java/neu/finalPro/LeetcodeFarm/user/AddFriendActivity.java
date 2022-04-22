@@ -42,10 +42,10 @@ public class AddFriendActivity extends AppCompatActivity {
         userId = preferenceManager.getString(Constants.KEY_USER_ID);
 
         friendIdList = getIntent().getStringArrayListExtra("friendList");
-        binding.imageBack.setOnClickListener(v -> {
-            Intent friendList = new Intent(getApplicationContext(), FriendList.class);
-            friendList.putExtra("userId", userId);
-            startActivity(friendList);
+        binding.imageBack.setOnClickListener(v ->  {
+            Intent prevPage = new Intent(getApplicationContext(), FriendList.class);
+            prevPage.putExtra("userId", userId);
+            startActivity(prevPage);
         });
         binding.searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override

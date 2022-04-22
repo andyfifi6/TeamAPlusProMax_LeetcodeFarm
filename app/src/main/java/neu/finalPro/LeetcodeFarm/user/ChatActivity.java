@@ -84,7 +84,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void setListeners(){
-        binding.imageBack.setOnClickListener(v -> onBackPressed());
+        binding.imageBack.setOnClickListener(v -> {
+            Intent prevPage = new Intent(getApplicationContext(), FriendList.class);
+            prevPage.putExtra("userId", userId);
+            startActivity(prevPage);
+        });
         binding.layoutSend.setOnClickListener(v -> sendMessage());
     }
 

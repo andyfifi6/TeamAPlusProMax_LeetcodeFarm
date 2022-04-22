@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -38,13 +39,14 @@ import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.note.utils.MyButtonClickListener;
 import neu.finalPro.LeetcodeFarm.note.utils.NotesListener;
 import neu.finalPro.LeetcodeFarm.note.utils.SwipeHelper;
+import neu.finalPro.LeetcodeFarm.user.MainActivity;
 import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class NoteActivity extends AppCompatActivity implements NotesListener {
     private ActivityNoteBinding binding;
     private String userId;
-    private List<Note> noteList;
+    private List<Note> noteList = new ArrayList<>();
     private NotesAdapter notesAdapter;
     private PreferenceManager preferenceManager;
     private int noteClickPosition = -1;
@@ -58,11 +60,6 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         preferenceManager = new PreferenceManager(getApplicationContext());
         userId = preferenceManager.getString(Constants.KEY_USER_ID);
         setListeners();
-        try {
-            getNotes();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         init();
     }
 
@@ -71,6 +68,11 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         notesAdapter = new NotesAdapter(noteList, this);
         binding.notesRecyclerView.setAdapter(notesAdapter);
         binding.notesRecyclerView.setVisibility(View.VISIBLE);
+        try {
+            getNotes();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         SwipeHelper swipeHelper = new SwipeHelper(this, binding.notesRecyclerView, 150) {
             @Override
             protected void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<SwipeHelper.MyButton> buffer) {
@@ -106,7 +108,12 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
     }
 
     private void setListeners(){
-        binding.imageBack.setOnClickListener(v -> onBackPressed());
+        binding.imageBack.setOnClickListener(v -> {
+            Intent mainPage = new Intent(getApplicationContext(), MainActivity.class);
+            mainPage.putExtra("userId", userId);
+            startActivity(mainPage);
+        });
+
         binding.addNoteMain.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
             intent.putExtra("ViewNote", false);
@@ -123,18 +130,18 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         );
         builder.setView(v);
         deleteNoteDialog = builder.create();
+        if (deleteNoteDialog.getWindow() != null) {
+            deleteNoteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
         v.findViewById(R.id.textNoteDelete).setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onClick(View view) {
-                deleteNote(pos);
-                try {
-                    getNotes();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                deleteNoteDialog.dismiss();
-            }
+        @SuppressLint("NotifyDataSetChanged")
+        @Override
+        public void onClick(View view) {
+            deleteNote(pos);
+            noteList.remove(pos);
+            notesAdapter.notifyDataSetChanged();
+            deleteNoteDialog.dismiss();
+        }
         });
 
         v.findViewById(R.id.textNoteCancelDelete).setOnClickListener(new View.OnClickListener() {
@@ -206,7 +213,7 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
                                     return res;
                                 }
                             });
-                            NotesAdapter notesAdapter = new NotesAdapter(noteList, this);
+                            notesAdapter = new NotesAdapter(noteList, this);
                             binding.notesRecyclerView.setAdapter(notesAdapter);
                             binding.notesRecyclerView.setVisibility(View.VISIBLE);
                         } else {
