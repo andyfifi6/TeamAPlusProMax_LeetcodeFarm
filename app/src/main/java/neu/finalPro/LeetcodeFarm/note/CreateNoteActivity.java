@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -39,6 +40,7 @@ import neu.finalPro.LeetcodeFarm.R;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityCreateNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.user.FriendList;
+import neu.finalPro.LeetcodeFarm.user.MainActivity;
 import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
@@ -139,7 +141,11 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void setListeners(){
-        binding.imageBack.setOnClickListener(v -> onBackPressed());
+        binding.imageBack.setOnClickListener(v ->  {
+            Intent mainPage = new Intent(getApplicationContext(), NoteActivity.class);
+            mainPage.putExtra("userId", userId);
+            startActivity(mainPage);
+        });
         binding.imageSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -278,8 +284,10 @@ public class CreateNoteActivity extends AppCompatActivity {
             View v = LayoutInflater.from(this).inflate(
                     R.layout.layout_add_url, (ViewGroup) findViewById(R.id.layoutAddUrl));
             builder.setView(v);
-
             dialogAddUrl = builder.create();
+            if (dialogAddUrl.getWindow() != null) {
+                dialogAddUrl.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            }
 
             EditText inputURL = v.findViewById(R.id.textUrl);
             inputURL.requestFocus();
