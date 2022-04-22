@@ -46,6 +46,9 @@
         <activity
             android:name=".user.MainActivity"
             android:exported="false"></activity>
+        <activity
+            android:name=".user.GrowthActivity"
+            android:exported="false"></activity>
     </application>
 
 </manifest>

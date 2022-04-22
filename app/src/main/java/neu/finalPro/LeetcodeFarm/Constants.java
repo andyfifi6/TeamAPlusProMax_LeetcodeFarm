@@ -8,4 +8,5 @@ public class Constants {
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_OF_INSTANCE = "KEY_OF_INSTANCE";
     public static final String NUMBER_OF_ITEMS = "NUMBER_OF_ITEMS";
+    public static final String KEY_CHECKIN_DATE_COUNT = "CHECKIN_DATE_COUNT";
 }
