@@ -24,20 +24,24 @@ import neu.finalPro.LeetcodeFarm.models.ChatMessage;
 import neu.finalPro.LeetcodeFarm.models.User;
 import neu.finalPro.LeetcodeFarm.note.CreateNoteActivity;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class ChatActivity extends AppCompatActivity {
     private ActivityChatBinding binding;
     private List<ChatMessage> chatMessages;
     private ChatAdapter chatAdapter;
     private FirebaseFirestore database;
+    private PreferenceManager preferenceManager;
     private String receiverId, receiverName, userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        preferenceManager = new PreferenceManager(getApplicationContext());
         setListeners();
-        userId = getIntent().getStringExtra("userId");
+        userId = preferenceManager.getString(Constants.KEY_USER_ID);
         receiverId = getIntent().getStringExtra("friendId");
         receiverName = getIntent().getStringExtra("friendName");
         init();
@@ -67,7 +71,6 @@ public class ChatActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
                 intent.putExtra("ShareMode", true);
                 intent.putExtra("note", clickedNote);
-                intent.putExtra("userId", userId);
                 startActivity(intent);
             }
         };
