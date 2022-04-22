@@ -1,7 +1,5 @@
 package neu.finalPro.LeetcodeFarm.note.adapters;
 
-import static android.os.Looper.*;
-
 import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,11 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.LogRecord;
 
 import neu.finalPro.LeetcodeFarm.databinding.ItemContainerNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
-import neu.finalPro.LeetcodeFarm.note.liseners.NotesListener;
+import neu.finalPro.LeetcodeFarm.note.utils.NotesListener;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
 

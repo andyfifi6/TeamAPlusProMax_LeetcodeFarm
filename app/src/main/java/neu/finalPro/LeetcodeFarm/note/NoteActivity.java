@@ -1,15 +1,24 @@
 package neu.finalPro.LeetcodeFarm.note;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -22,10 +31,13 @@ import java.util.Date;
 import java.util.List;
 
 
+import neu.finalPro.LeetcodeFarm.R;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.adapters.NotesAdapter;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
-import neu.finalPro.LeetcodeFarm.note.liseners.NotesListener;
+import neu.finalPro.LeetcodeFarm.note.utils.MyButtonClickListener;
+import neu.finalPro.LeetcodeFarm.note.utils.NotesListener;
+import neu.finalPro.LeetcodeFarm.note.utils.SwipeHelper;
 import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
@@ -36,6 +48,7 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
     private NotesAdapter notesAdapter;
     private PreferenceManager preferenceManager;
     private int noteClickPosition = -1;
+    private AlertDialog deleteNoteDialog = null;
     private FirebaseFirestore database = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +71,19 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         notesAdapter = new NotesAdapter(noteList, this);
         binding.notesRecyclerView.setAdapter(notesAdapter);
         binding.notesRecyclerView.setVisibility(View.VISIBLE);
+        SwipeHelper swipeHelper = new SwipeHelper(this, binding.notesRecyclerView, 150) {
+            @Override
+            protected void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<SwipeHelper.MyButton> buffer) {
+                buffer.add(new MyButton("Delete", R.drawable.ic_delete_forever, 30, R.color.lightRed,
+                        new MyButtonClickListener() {
+                            @Override
+                            public void onClick(int position) {
+                                Log.d("position in swipe", String.valueOf(position));
+                                showDeleteNoteDialog(position);
+                            }
+                        }, NoteActivity.this));
+            }
+        };
         binding.inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -90,6 +116,52 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
 
     }
 
+    private void showDeleteNoteDialog(int pos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(NoteActivity.this);
+        View v = LayoutInflater.from(this).inflate(
+                R.layout.layout_delete_note, (ViewGroup) findViewById(R.id.layoutDeleteNote)
+        );
+        builder.setView(v);
+        deleteNoteDialog = builder.create();
+        v.findViewById(R.id.textNoteDelete).setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onClick(View view) {
+                deleteNote(pos);
+                try {
+                    getNotes();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                deleteNoteDialog.dismiss();
+            }
+        });
+
+        v.findViewById(R.id.textNoteCancelDelete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteNoteDialog.dismiss();
+            }
+        });
+        deleteNoteDialog.show();
+    }
+
+    private void deleteNote(int pos) {
+        Note noteToDelete = noteList.get(pos);
+        Log.d("note to delete", noteToDelete.toString());
+        database.collection("notes").document(noteToDelete.getId())
+                .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(NoteActivity.this, "Note deleted successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(NoteActivity.this, "Fail to delete this note", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
     @Override
     public void onNoteClick(Note note, int position) {
         noteClickPosition = position;
@@ -113,6 +185,7 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
                             note.setNoteText(queryDocumentSnapshot.getString("noteText"));
                             note.setDateTime(queryDocumentSnapshot.getString("dateTime"));
                             note.setImagePath(queryDocumentSnapshot.getString("imagePath"));
+                            note.setWebLink(queryDocumentSnapshot.getString("webLink"));
                             note.setId(queryDocumentSnapshot.getId());
                             note.setUserId(userId);
                             noteList.add(note);

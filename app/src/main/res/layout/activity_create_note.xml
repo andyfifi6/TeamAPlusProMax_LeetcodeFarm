@@ -33,6 +33,21 @@
                 app:tint="@color/blue" />
 
             <ImageView
+                android:id="@+id/addUrl"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginEnd="140dp"
+                android:background="@drawable/background_done_button"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/ic_link"
+                app:layout_constraintBottom_toBottomOf="@+id/imageBack"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imageBack"
+                app:layout_constraintVertical_bias="0.428"
+                app:tint="@color/blue" />
+
+            <ImageView
                 android:id="@+id/imageSave"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
@@ -48,17 +63,18 @@
 
             <ImageView
                 android:id="@+id/imageShare"
-                android:background="@drawable/background_done_button"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:src="@drawable/ic_baseline_share_24"
+                android:layout_marginEnd="96dp"
+                android:background="@drawable/background_done_button"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_4sdp"
+                android:src="@drawable/ic_baseline_share_24"
                 app:layout_constraintBottom_toBottomOf="@+id/imageBack"
                 app:layout_constraintEnd_toEndOf="@+id/imageSave"
                 app:layout_constraintEnd_toStartOf="@+id/addImage"
                 app:layout_constraintTop_toTopOf="@id/imageBack"
+                app:layout_constraintVertical_bias="0.428"
                 app:tint="@color/blue" />
 
             <ImageView
@@ -109,7 +125,7 @@
                 android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@null"
-                android:hint="@string/note_subtitle"
+                android:hint="@string/add_tags"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:paddingTop="@dimen/_8sdp"
@@ -129,6 +145,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/inputNoteSubtitle" />
 
+            <TextView
+                android:id="@+id/displayLCUrl"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:background="@null"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
+                android:textSize="@dimen/_13ssp"
+                android:autoLink="web"
+                android:visibility="gone"
+                android:textColor="@color/yellow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/inputNoteSubtitle" />
+
             <ImageView
                 android:id="@+id/image1"
                 android:layout_width="match_parent"
@@ -139,31 +173,8 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/app_name"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/inputNoteSubtitle" />
+                app:layout_constraintTop_toBottomOf="@id/displayLCUrl" />
 
-            <ImageView
-                android:id="@+id/image2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/app_name"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/image1" />
-
-            <ImageView
-                android:id="@+id/image3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/app_name"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/image2" />
 
             <ImageView
                 android:id="@+id/removeImage1"
@@ -209,7 +220,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image3" />
+                app:layout_constraintTop_toBottomOf="@+id/image1" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
