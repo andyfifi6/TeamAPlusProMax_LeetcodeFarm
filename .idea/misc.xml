@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-v24/background_dialog.xml" value="0.1" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.157" />
         <entry key="app/src/main/res/drawable-v24/ic_link.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/background_add_button.xml" value="0.449" />
@@ -24,6 +25,7 @@
         <entry key="app/src/main/res/drawable/ic_delete_forever.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_info.xml" value="0.24635416666666668" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.157" />
+        <entry key="app/src/main/res/drawable/ic_link.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_send.xml" value="0.24635416666666668" />
         <entry key="app/src/main/res/layout/activity_add_friend.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_chat.xml" value="0.23020833333333332" />
