@@ -42,7 +42,11 @@ public class FriendList extends AppCompatActivity {
         String username = getIntent().getStringExtra("username");
         userId = getIntent().getStringExtra("userId");
         shareMode = getIntent().getBooleanExtra("shareMode",false);
-        binding.imageBack.setOnClickListener(v -> onBackPressed());
+        binding.imageBack.setOnClickListener(v -> {
+            Intent mainPage = new Intent(getApplicationContext(), MainActivity.class);
+            mainPage.putExtra("userId", userId);
+            startActivity(mainPage);
+        });
         binding.newFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

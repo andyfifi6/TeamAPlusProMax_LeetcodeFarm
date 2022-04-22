@@ -20,6 +20,7 @@ import neu.finalPro.LeetcodeFarm.databinding.ActivityNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.adapters.NotesAdapter;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.note.liseners.NotesListener;
+import neu.finalPro.LeetcodeFarm.user.MainActivity;
 
 public class NoteActivity extends AppCompatActivity implements NotesListener {
     private ActivityNoteBinding binding;
@@ -67,7 +68,11 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
     }
 
     private void setListeners(){
-        binding.imageBack.setOnClickListener(v -> onBackPressed());
+        binding.imageBack.setOnClickListener(v -> {
+            Intent mainPage = new Intent(getApplicationContext(), MainActivity.class);
+            mainPage.putExtra("userId", userId);
+            startActivity(mainPage);
+                });
         binding.addNoteMain.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
             intent.putExtra("ViewNote", false);

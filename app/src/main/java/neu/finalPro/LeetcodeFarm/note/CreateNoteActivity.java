@@ -33,6 +33,7 @@ import java.util.Locale;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityCreateNoteBinding;
 import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.user.FriendList;
+import neu.finalPro.LeetcodeFarm.user.MainActivity;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
@@ -123,7 +124,11 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void setListeners(){
-        binding.imageBack.setOnClickListener(v -> onBackPressed());
+        binding.imageBack.setOnClickListener(v -> {
+            Intent notePage = new Intent(getApplicationContext(), NoteActivity.class);
+            notePage.putExtra("userId", userId);
+            startActivity(notePage);
+        });
         binding.imageSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,6 +170,9 @@ public class CreateNoteActivity extends AppCompatActivity {
         // under view mode, update the existing notes, otherwise, create a new note(in share mode,will store a new copy into current user's notes)
         if (viewNote) {
             database.collection("notes").document(availableNote.getId()).set(note);
+            Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
         } else {
             HashMap<String, Object> noteMap = new HashMap<>();
             noteMap.put("userId", userId);
