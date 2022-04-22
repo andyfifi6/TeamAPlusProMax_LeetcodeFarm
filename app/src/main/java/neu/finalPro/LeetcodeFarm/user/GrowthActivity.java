@@ -13,14 +13,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
-import neu.finalPro.LeetcodeFarm.Constants;
+import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.R;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityGrowthBinding;
+import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 
 public class GrowthActivity extends AppCompatActivity {
 
     private ActivityGrowthBinding binding;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private PreferenceManager preferenceManager;
     private Long lastCheckInTime;
     private int currentMileStone;
     private int currentCheckInDateCount;
@@ -42,9 +44,14 @@ public class GrowthActivity extends AppCompatActivity {
         setListener();
 
         //Set up Initial Data
-        username = getIntent().getStringExtra("username");
-        userId = getIntent().getStringExtra("userId");
-        userEmail = getIntent().getStringExtra("userEmail");
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        username = preferenceManager.getString(Constants.KEY_USERNAME);
+        userId = preferenceManager.getString(Constants.KEY_USER_ID);
+        userEmail = preferenceManager.getString(Constants.KEY_EMAIL);
+
+//        username = getIntent().getStringExtra("username");
+//        userId = getIntent().getStringExtra("userId");
+//        userEmail = getIntent().getStringExtra("userEmail");
         getInitialDataFromFirebase();
         convertCheckInDateCount();
 
