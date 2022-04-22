@@ -46,7 +46,7 @@ import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
 public class NoteActivity extends AppCompatActivity implements NotesListener {
     private ActivityNoteBinding binding;
     private String userId;
-    private List<Note> noteList;
+    private List<Note> noteList = new ArrayList<>();
     private NotesAdapter notesAdapter;
     private PreferenceManager preferenceManager;
     private int noteClickPosition = -1;
@@ -60,11 +60,6 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         preferenceManager = new PreferenceManager(getApplicationContext());
         userId = preferenceManager.getString(Constants.KEY_USER_ID);
         setListeners();
-        try {
-            getNotes();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         init();
     }
 
@@ -73,6 +68,11 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         notesAdapter = new NotesAdapter(noteList, this);
         binding.notesRecyclerView.setAdapter(notesAdapter);
         binding.notesRecyclerView.setVisibility(View.VISIBLE);
+        try {
+            getNotes();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         SwipeHelper swipeHelper = new SwipeHelper(this, binding.notesRecyclerView, 150) {
             @Override
             protected void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<SwipeHelper.MyButton> buffer) {
@@ -138,11 +138,8 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
         @Override
         public void onClick(View view) {
             deleteNote(pos);
-            try {
-                getNotes();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            noteList.remove(pos);
+            notesAdapter.notifyDataSetChanged();
             deleteNoteDialog.dismiss();
         }
         });
@@ -216,7 +213,7 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
                                     return res;
                                 }
                             });
-                            NotesAdapter notesAdapter = new NotesAdapter(noteList, this);
+                            notesAdapter = new NotesAdapter(noteList, this);
                             binding.notesRecyclerView.setAdapter(notesAdapter);
                             binding.notesRecyclerView.setVisibility(View.VISIBLE);
                         } else {
