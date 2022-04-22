@@ -37,7 +37,11 @@ public class AddFriendActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         userId = getIntent().getStringExtra("userId");
         friendIdList = getIntent().getStringArrayListExtra("friendList");
-        binding.imageBack.setOnClickListener(v -> onBackPressed());
+        binding.imageBack.setOnClickListener(v -> {
+            Intent friendList = new Intent(getApplicationContext(), FriendList.class);
+            friendList.putExtra("userId", userId);
+            startActivity(friendList);
+        });
         binding.searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
