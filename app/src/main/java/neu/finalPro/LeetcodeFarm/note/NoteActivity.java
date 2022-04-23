@@ -39,6 +39,7 @@ import neu.finalPro.LeetcodeFarm.note.entities.Note;
 import neu.finalPro.LeetcodeFarm.note.utils.MyButtonClickListener;
 import neu.finalPro.LeetcodeFarm.note.utils.NotesListener;
 import neu.finalPro.LeetcodeFarm.note.utils.SwipeHelper;
+import neu.finalPro.LeetcodeFarm.user.GrowthActivity;
 import neu.finalPro.LeetcodeFarm.user.MainActivity;
 import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.utility.PreferenceManager;
@@ -109,7 +110,7 @@ public class NoteActivity extends AppCompatActivity implements NotesListener {
 
     private void setListeners(){
         binding.imageBack.setOnClickListener(v -> {
-            Intent mainPage = new Intent(getApplicationContext(), MainActivity.class);
+            Intent mainPage = new Intent(getApplicationContext(), GrowthActivity.class);
             mainPage.putExtra("userId", userId);
             startActivity(mainPage);
         });

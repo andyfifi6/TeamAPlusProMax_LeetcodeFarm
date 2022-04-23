@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
+import neu.finalPro.LeetcodeFarm.note.NoteActivity;
 import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.R;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityGrowthBinding;
@@ -79,8 +80,15 @@ public class GrowthActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), FriendList.class);
                 intent.putExtra(Constants.KEY_USERNAME, username);
                 intent.putExtra("userId", userId);
+                intent.putExtra("shareMode", true);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+            }
+        });
+        binding.myNotesIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), NoteActivity.class));
             }
         });
     }

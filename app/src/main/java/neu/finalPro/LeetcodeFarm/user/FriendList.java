@@ -47,7 +47,7 @@ public class FriendList extends AppCompatActivity {
             binding.newFriend.setVisibility(View.GONE);
         }
         binding.imageBack.setOnClickListener(v -> {
-            Intent prevPage = new Intent(getApplicationContext(), MainActivity.class);
+            Intent prevPage = new Intent(getApplicationContext(), GrowthActivity.class);
             prevPage.putExtra("userId", userId);
             startActivity(prevPage);
         });
