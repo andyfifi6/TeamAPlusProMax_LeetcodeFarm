@@ -126,7 +126,7 @@
         app:srcCompat="@drawable/friendlisticon" />
 
     <TextView
-        android:id="@+id/myFriends"
+        android:id="@+id/myFriendsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -148,7 +148,7 @@
         app:srcCompat="@drawable/note" />
 
     <TextView
-        android:id="@+id/myNotes"
+        android:id="@+id/myNotesText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="My Notes"

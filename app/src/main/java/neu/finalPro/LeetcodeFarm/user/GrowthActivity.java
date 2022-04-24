@@ -85,7 +85,25 @@ public class GrowthActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        binding.myFriendsText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FriendList.class);
+                intent.putExtra(Constants.KEY_USERNAME, username);
+                intent.putExtra("userId", userId);
+                intent.putExtra("shareMode", false);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
         binding.myNotesIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), NoteActivity.class));
+            }
+        });
+        binding.myNotesText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getApplicationContext(), NoteActivity.class));
