@@ -80,7 +80,7 @@ public class GrowthActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), FriendList.class);
                 intent.putExtra(Constants.KEY_USERNAME, username);
                 intent.putExtra("userId", userId);
-                intent.putExtra("shareMode", true);
+                intent.putExtra("shareMode", false);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
