@@ -119,7 +119,7 @@
         android:id="@+id/friendlistIcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/frameLayout2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/frameLayout2"
@@ -140,7 +140,7 @@
         android:id="@+id/myNotesIcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="-60dp"
+        android:layout_marginStart="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout2"
         app:layout_constraintStart_toStartOf="@+id/frameLayout2"
@@ -163,21 +163,10 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/myNotesText"
-        app:layout_constraintTop_toTopOf="@+id/frameLayout2"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileImage"
         app:srcCompat="@drawable/logout" />
-
-    <TextView
-        android:id="@+id/logoutText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:text="Log Out"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/frameLayout2"
-        app:layout_constraintStart_toEndOf="@+id/logoutBtn"
-        app:layout_constraintTop_toTopOf="@+id/frameLayout2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
