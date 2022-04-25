@@ -104,16 +104,21 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
-        binding.imageShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), FriendList.class);
-                intent.putExtra("shareMode", true);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.putExtra("note", (Note) getIntent().getSerializableExtra("note"));
-                startActivity(intent);
-            }
-        });
+        if(viewNote){
+            binding.imageShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), FriendList.class);
+                    intent.putExtra("shareMode", true);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra("note", (Note) getIntent().getSerializableExtra("note"));
+                    startActivity(intent);
+                }
+            });
+        } else {
+            binding.imageShare.setVisibility(View.GONE);
+        }
+
         binding.textDateTime.setText(
                 new SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm a", Locale.getDefault()).format(new Date())
         );
