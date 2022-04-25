@@ -58,22 +58,12 @@ public class GrowthActivity extends AppCompatActivity {
 
         //Initialize Data
         InitializeAllViews();
-
-        //Animation Test
-//        binding.growthImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                YoYo.with(Techniques.BounceIn)
-//                        .duration(1000)
-//                        .playOn(binding.growthImage);
-//            }
-//        }
-//        )
-//        ;
     }
 
     private void setListener() {
         binding.checkInBtn.setOnClickListener(v -> clickCheckInBtn());
+
+        //My friend list listener
         binding.friendlistIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,6 +87,7 @@ public class GrowthActivity extends AppCompatActivity {
             }
         });
 
+        //My notes listener
         binding.myNotesIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,6 +100,21 @@ public class GrowthActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), NoteActivity.class));
             }
         });
+
+        //Log out listener
+        binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
+        binding.logoutText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
+
     }
 
     private void getInitialDataFromFirebase() {
