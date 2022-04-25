@@ -50,9 +50,6 @@ public class GrowthActivity extends AppCompatActivity {
         userId = preferenceManager.getString(Constants.KEY_USER_ID);
         userEmail = preferenceManager.getString(Constants.KEY_EMAIL);
 
-//        username = getIntent().getStringExtra("username");
-//        userId = getIntent().getStringExtra("userId");
-//        userEmail = getIntent().getStringExtra("userEmail");
         getInitialDataFromFirebase();
         convertCheckInDateCount();
 

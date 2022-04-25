@@ -138,8 +138,8 @@
 
     <ImageView
         android:id="@+id/myNotesIcon"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="-60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout2"
@@ -151,7 +151,7 @@
         android:id="@+id/myNotesText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="-10dp"
+        android:layout_marginStart="5dp"
         android:text="My Notes"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/frameLayout2"
@@ -172,10 +172,10 @@
         android:id="@+id/logoutText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="5dp"
         android:text="Log Out"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/myNotesIcon"
+        app:layout_constraintBottom_toBottomOf="@+id/frameLayout2"
         app:layout_constraintStart_toEndOf="@+id/logoutBtn"
         app:layout_constraintTop_toTopOf="@+id/frameLayout2" />
 
