@@ -82,6 +82,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 binding.imageShare.setVisibility(View.GONE);
                 binding.imageSave.setVisibility(View.GONE);
                 binding.addImage.setVisibility(View.GONE);
+                binding.addUrl.setVisibility(View.GONE);
             }
             setViewNote();
         }
@@ -147,9 +148,13 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private void setListeners(){
         binding.imageBack.setOnClickListener(v ->  {
-            Intent mainPage = new Intent(getApplicationContext(), NoteActivity.class);
-            mainPage.putExtra("userId", userId);
-            startActivity(mainPage);
+            if(shareMode) {
+                onBackPressed();
+            } else{
+                Intent mainPage = new Intent(getApplicationContext(), NoteActivity.class);
+                mainPage.putExtra("userId", userId);
+                startActivity(mainPage);
+            }
         });
         binding.imageSave.setOnClickListener(new View.OnClickListener() {
             @Override
