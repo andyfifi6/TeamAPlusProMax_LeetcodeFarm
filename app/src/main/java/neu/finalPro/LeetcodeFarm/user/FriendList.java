@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import neu.finalPro.LeetcodeFarm.note.NoteActivity;
 import neu.finalPro.LeetcodeFarm.utility.Constants;
 import neu.finalPro.LeetcodeFarm.databinding.ActivityFriendListBinding;
 import neu.finalPro.LeetcodeFarm.models.ChatMessage;
@@ -47,9 +48,14 @@ public class FriendList extends AppCompatActivity {
             binding.newFriend.setVisibility(View.GONE);
         }
         binding.imageBack.setOnClickListener(v -> {
-            Intent prevPage = new Intent(getApplicationContext(), GrowthActivity.class);
-            prevPage.putExtra("userId", userId);
-            startActivity(prevPage);
+            if(shareMode) {
+                Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivity(intent);
+            } else {
+                Intent prevPage = new Intent(getApplicationContext(), GrowthActivity.class);
+                prevPage.putExtra("userId", userId);
+                startActivity(prevPage);
+            }
         });
         binding.newFriend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,12 +126,12 @@ public class FriendList extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null){
+                        loading(false);
                         for(QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()){
                             String friendId = queryDocumentSnapshot.get("userId").toString();
                             friendIdList.add(friendId);
                         }
                         if(friendIdList.size() > 0 ){
-                            loading(false);
                             getUser();
                         }
                     } else {

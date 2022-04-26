@@ -102,11 +102,13 @@ public class GrowthActivity extends AppCompatActivity {
         binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preferenceManager.clear();
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             }
         });
 
     }
+
 
     private void getInitialDataFromFirebase() {
         db.collection(Constants.KEY_COLLECTION_USERS)

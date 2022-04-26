@@ -84,6 +84,7 @@ public class SignUpActivity extends AppCompatActivity {
         user.put(Constants.KEY_USERNAME, inputName.getText().toString());
         user.put(Constants.KEY_EMAIL, inputEmail.getText().toString());
         user.put(Constants.KEY_PASSWORD, inputPassword.getText().toString());
+        user.put(Constants.KEY_CHECK_IN_DAYS, 1);
         user.put(Constants.KEY_IMAGE, "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .add(user)
@@ -93,8 +94,8 @@ public class SignUpActivity extends AppCompatActivity {
                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                     preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
                     preferenceManager.putString(Constants.KEY_USERNAME, binding.inputName.getText().toString());
-
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    preferenceManager.putString(Constants.KEY_EMAIL, inputEmail.getText().toString());
+                    Intent intent = new Intent(getApplicationContext(), GrowthActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 })
