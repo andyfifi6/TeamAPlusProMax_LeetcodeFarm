@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/CS5520_Mobile_App_Development/TeamAPlusProMax_LeetcodeFarm/app/src/main/res/layout/activity_growth.xml" value="0.33" />
+        <entry key="..\:/CS5520_Mobile_App_Development/TeamAPlusProMax_LeetcodeFarm/app/src/main/res/layout/activity_location.xml" value="0.1778115501519757" />
+        <entry key="..\:/CS5520_Mobile_App_Development/TeamAPlusProMax_LeetcodeFarm/app/src/main/res/layout/activity_login.xml" value="0.1778115501519757" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.157" />
         <entry key="app/src/main/res/drawable/background_add_button.xml" value="0.449" />
         <entry key="app/src/main/res/drawable/background_back_bottom.xml" value="0.165" />

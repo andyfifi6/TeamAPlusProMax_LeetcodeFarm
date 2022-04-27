@@ -3,6 +3,8 @@ package neu.finalPro.LeetcodeFarm.user;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +39,7 @@ public class GrowthActivity extends AppCompatActivity {
     private final static Integer MILESTONE_INTERVAL = 5;
     private final static String CHECKIN_DATE_COUNT = "CHECKIN_DATE_COUNT";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class GrowthActivity extends AppCompatActivity {
 
         //Initialize Data
         InitializeAllViews();
+
     }
 
     private void setListener() {
@@ -104,6 +108,20 @@ public class GrowthActivity extends AppCompatActivity {
             public void onClick(View view) {
                 preferenceManager.clear();
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
+
+        //Location Listener
+        binding.locationImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), LocationActivity.class));
+            }
+        });
+        binding.myLocationText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), LocationActivity.class));
             }
         });
 
@@ -242,15 +260,5 @@ public class GrowthActivity extends AppCompatActivity {
         binding.progressBar.setProgress(progress);
     }
 
-//    private void WaterAnimation() {
-//        binding.kettle.setVisibility(View.VISIBLE);
-//        YoYo.with(Techniques.Wave)
-//                .duration(500)
-//                .repeat(0)
-//                .playOn(binding.kettle);
-//        YoYo.with(Techniques.FadeOut)
-//                .duration(500)
-//                .repeat(0)
-//                .playOn(binding.kettle);
-//    }
+
 }
